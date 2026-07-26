@@ -3,12 +3,12 @@
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Middleware\CheckAdmin;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [CatalogController::class, 'index']);
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
