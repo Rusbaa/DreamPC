@@ -1,41 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-950">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'DreamPC') }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'DreamPC - Intelligent Hardware Marketplace') }}</title>
+    
+    <!-- Google Fonts & Tailwind CSS CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
-    <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
-                DreamPC
-            </a>
-            <div class="flex items-center space-x-4">
-                @auth
-                    <span class="text-sm text-slate-400">Welcome, {{ Auth::user()->name }}</span>
-                    @if(Auth::user()->role === 'admin')
-                        <a href="/admin/dashboard" class="text-xs bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 px-2.5 py-1 rounded-full font-medium">Admin</a>
-                    @endif
-                    <form method="POST" action="/logout" class="inline">
-                        @csrf
-                        <button type="submit" class="text-sm text-slate-400 hover:text-white transition">Logout</button>
-                    </form>
-                @else
-                    <a href="/login" class="text-sm text-slate-300 hover:text-white transition">Log in</a>
-                    <a href="/register" class="text-sm bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition shadow-lg shadow-blue-600/20">Register</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-blue-500 selection:text-white overflow-x-hidden">
+    
+    <!-- Responsive Navigation Bar -->
+    @include('layouts.navigation')
 
-    <main class="flex-grow flex items-center justify-center p-6">
+    <!-- Flash Alert Messages -->
+    @if (session('success') || session('error'))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full">
+            @if (session('success'))
+                <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl text-sm flex items-center justify-between shadow-lg backdrop-blur-md">
+                    <span>{{ session('success') }}</span>
+                    <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-200">✕</button>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm flex items-center justify-between shadow-lg backdrop-blur-md">
+                    <span>{{ session('error') }}</span>
+                    <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-200">✕</button>
+                </div>
+            @endif
+        </div>
+    @endif
+
+    <!-- Main Responsive Body Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @yield('content')
     </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 text-slate-500 text-xs py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:text-left">
+            <p>&copy; {{ date('Y') }} DreamPC. All rights reserved.</p>
+            <p class="mt-2 sm:mt-0">Intelligent Conversational Hardware Marketplace</p>
+        </div>
+    </footer>
+
 </body>
 </html>
