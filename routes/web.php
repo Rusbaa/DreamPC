@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\CheckAdmin;
@@ -28,4 +29,5 @@ Route::middleware(['auth', CheckAdmin::class])->prefix('admin')->group(function 
     Route::get('/dashboard', function () {
         return response()->json(['message' => 'Welcome to the Admin Dashboard']);
     });
+    Route::resource('products', ProductController::class);
 });
