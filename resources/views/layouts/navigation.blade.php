@@ -27,6 +27,10 @@
                         <span>🛒</span>
                         <span>Cart</span>
                     </a>
+                    <a href="/orders" class="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-1">
+                        <span>📜</span>
+                        <span>Orders</span>
+                    </a>
                     @auth
                         @if(Auth::user()->role === 'admin')
                             <a href="{{ route('products.index') }}" class="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition">Inventory CRUD</a>
@@ -80,6 +84,7 @@
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">Catalog</a>
             <a href="/build/summary" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">📊 Build Summary</a>
             <a href="/chat" class="block px-3 py-2 rounded-md text-base font-medium text-blue-400 hover:bg-blue-950/40 transition">🤖 AI Assistant</a>
+            <a href="/orders" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">📜 Orders</a>
             @auth
                 @if(Auth::user()->role === 'admin')
                     <a href="{{ route('products.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-400 hover:bg-indigo-950/50 transition">Inventory CRUD</a>

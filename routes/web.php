@@ -41,6 +41,10 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
 
+// Order History Routes
+use App\Http\Controllers\OrderHistoryController;
+Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
+
 // Guest Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
