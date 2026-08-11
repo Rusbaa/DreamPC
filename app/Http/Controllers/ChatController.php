@@ -5,30 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\Product;
+use App\Services\ChatSessionManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
+    protected ChatSessionManager $sessionManager;
+
+    public function __construct(ChatSessionManager $sessionManager)
+    {
+        $this->sessionManager = $sessionManager;
+    }
+
     /**
      * Display the chat interface and load active session messages.
      */
     public function index(Request $request)
     {
-        $sessionToken = session('chat_session_token');
-        
-        if (!$sessionToken) {
-            $sessionToken = Str::uuid()->toString();
-            session(['chat_session_token' => $sessionToken]);
-        }
-
-        $userId = auth()->id();
-
-        $chatSession = ChatSession::firstOrCreate(
-            ['session_token' => $sessionToken],
-            ['user_id' => $userId, 'title' => 'Hardware Assistant Chat']
-        );
-
+        $chatSession = $this->sessionManager->getOrCreateSession();
         $messages = $chatSession->messages()->orderBy('created_at', 'asc')->get();
 
         return view('chat.index', compact('chatSession', 'messages'));
@@ -44,33 +39,20 @@ class ChatController extends Controller
         ]);
 
         $userMessageText = trim($request->input('message'));
+        $chatSession = $this->sessionManager->getOrCreateSession();
 
-        $sessionToken = session('chat_session_token');
-        if (!$sessionToken) {
-            $sessionToken = Str::uuid()->toString();
-            session(['chat_session_token' => $sessionToken]);
-        }
-
-        $chatSession = ChatSession::firstOrCreate(
-            ['session_token' => $sessionToken],
-            ['user_id' => auth()->id(), 'title' => 'Hardware Assistant Chat']
-        );
+        // Construct Gemini Payload with History BEFORE storing user message (or pass user message to builder)
+        // Here we build the payload including up to the last 10 messages + the new message
+        $geminiPayload = $this->sessionManager->buildGeminiPayload($chatSession, $userMessageText);
 
         // Store User Message
-        $userMessage = $chatSession->messages()->create([
-            'sender' => 'user',
-            'message_text' => $userMessageText,
-        ]);
+        $userMessage = $this->sessionManager->storeMessage($chatSession, 'user', $userMessageText);
 
-        // Generate NLP Bot Response
-        $nlpResult = $this->processNaturalLanguageInput($userMessageText);
+        // Pass payload (with context) into the NLP engine
+        $nlpResult = $this->processNaturalLanguageInput($userMessageText, $geminiPayload);
 
         // Store Assistant Response
-        $botMessage = $chatSession->messages()->create([
-            'sender' => 'assistant',
-            'message_text' => $nlpResult['text'],
-            'json_payload' => $nlpResult['payload'] ?? null,
-        ]);
+        $botMessage = $this->sessionManager->storeMessage($chatSession, 'assistant', $nlpResult['text'], $nlpResult['payload'] ?? null);
 
         return response()->json([
             'status' => 'success',
@@ -93,7 +75,7 @@ class ChatController extends Controller
     /**
      * Natural Language Processing engine logic to understand user intent.
      */
-    protected function processNaturalLanguageInput(string $input): array
+    protected function processNaturalLanguageInput(string $input, array $payloadContext = []): array
     {
         $lower = strtolower($input);
         $payload = null;
