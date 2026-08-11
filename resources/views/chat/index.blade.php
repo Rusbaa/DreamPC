@@ -60,7 +60,9 @@
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm max-w-[85%] shadow-md leading-relaxed">
                         {!! nl2br(e($msg->message_text)) !!}
                         
-                        @if(!empty($msg->json_payload['suggested_products']))
+                        @if(!empty($msg->json_payload['card_html']))
+                            {!! $msg->json_payload['card_html'] !!}
+                        @elseif(!empty($msg->json_payload['suggested_products']))
                             <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2">
                                 <span class="text-xs font-semibold text-slate-400">Suggested Components:</span>
                                 <div class="grid grid-cols-1 gap-2">
@@ -196,15 +198,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(spinnerId)?.remove();
 
             if (data.status === 'success' && data.bot_message) {
-                let suggestedHtml = '';
-                if (data.bot_message.payload && data.bot_message.payload.suggested_products) {
+                let cardHtml = '';
+                if (data.bot_message.payload && data.bot_message.payload.card_html) {
+                    cardHtml = data.bot_message.payload.card_html;
+                } else if (data.bot_message.payload && data.bot_message.payload.suggested_products) {
                     const items = data.bot_message.payload.suggested_products.map(p => `
                         <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 px-3 py-2 rounded-lg text-xs">
                             <span class="text-slate-200 font-medium">${escapeHtml(p.name)}</span>
                             <span class="text-emerald-400 font-bold">${p.price}</span>
                         </div>
                     `).join('');
-                    suggestedHtml = `
+                    cardHtml = `
                         <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2">
                             <span class="text-xs font-semibold text-slate-400">Suggested Components:</span>
                             <div class="grid grid-cols-1 gap-2">${items}</div>
@@ -219,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm max-w-[85%] shadow-md leading-relaxed">
                             ${escapeHtml(data.bot_message.text).replace(/\n/g, '<br>')}
-                            ${suggestedHtml}
+                            ${cardHtml}
                             <div class="mt-2 text-[10px] text-slate-500 text-right">${data.bot_message.created_at}</div>
                         </div>
                     </div>

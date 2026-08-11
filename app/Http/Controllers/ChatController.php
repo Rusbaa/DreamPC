@@ -93,9 +93,22 @@ class ChatController extends Controller
 
             if ($recommendedProducts->isNotEmpty()) {
                 $productNames = $recommendedProducts->pluck('name')->implode(', ');
-                $text = "Based on your request, here are top component recommendations within your target range: **{$productNames}**.";
+                $text = "Based on your request, here are top component recommendations within your target range:";
+                
+                $compatibilityEngine = app(\App\Services\CompatibilityEngine::class);
+                $compatCheck = $compatibilityEngine->checkCompatibility($recommendedProducts->pluck('id')->all());
+                $totalPrice = $recommendedProducts->sum('price');
+
+                $cardHtml = view('chat.partials.build-card', [
+                    'products' => $recommendedProducts,
+                    'isCompatible' => $compatCheck['is_compatible'],
+                    'incompatibilities' => $compatCheck['incompatibilities'],
+                    'totalPrice' => $totalPrice,
+                ])->render();
+
                 $payload = [
                     'intent' => 'build_recommendation',
+                    'card_html' => $cardHtml,
                     'suggested_products' => $recommendedProducts->map(fn($p) => [
                         'id' => $p->id,
                         'name' => $p->name,
