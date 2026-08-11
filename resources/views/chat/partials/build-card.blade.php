@@ -51,7 +51,7 @@
 
     <!-- Add Build to Cart Button -->
     <div class="pt-2 border-t border-slate-800/80 flex justify-end">
-        <form method="POST" action="/cart/add-build" class="w-full sm:w-auto">
+        <form method="POST" action="{{ route('cart.batch-add') }}" class="w-full sm:w-auto">
             @csrf
             @foreach($products as $product)
                 <input type="hidden" name="product_ids[]" value="{{ $product->id }}">

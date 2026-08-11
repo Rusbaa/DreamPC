@@ -25,6 +25,7 @@ use App\Http\Controllers\CartController;
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/add-build', [CartController::class, 'add'])->name('cart.add-build');
+Route::post('/cart/batch-add', [CartController::class, 'batchAdd'])->name('cart.batch-add');
 Route::patch('/cart/items/{item}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/items/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::post('/cart/items/{item}/swap', [CartController::class, 'swap'])->name('cart.swap');

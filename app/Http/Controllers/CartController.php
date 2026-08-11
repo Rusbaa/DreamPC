@@ -120,4 +120,49 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('success', 'Component swapped with compatible alternative!');
     }
+
+    /**
+     * Atomically add a batch of items (representing a full build) to the cart.
+     * Uses DB::transaction and StockCheckerService for validation.
+     */
+    public function batchAdd(Request $request, \App\Services\StockCheckerService $stockChecker)
+    {
+        $productIds = $request->input('product_ids', []);
+        if (is_string($productIds)) {
+            $productIds = array_filter(explode(',', $productIds));
+        }
+        $productIds = array_values(array_filter(array_map('intval', (array)$productIds)));
+
+        if (empty($productIds)) {
+            return redirect()->route('cart.index')->with('error', 'No products selected to add to cart.');
+        }
+
+        $productQuantities = array_count_values($productIds);
+
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($productQuantities, $stockChecker) {
+                $report = $stockChecker->verifyBatchStock($productQuantities);
+                
+                $insufficient = [];
+                foreach ($report as $productId => $info) {
+                    if (!$info['has_enough']) {
+                        $productName = \App\Models\Product::find($productId)->name ?? "Product #{$productId}";
+                        $insufficient[] = "'{$productName}' has insufficient stock (Available: {$info['available']}).";
+                    }
+                }
+
+                if (!empty($insufficient)) {
+                    throw new \Exception(implode(' ', $insufficient));
+                }
+
+                foreach ($productQuantities as $productId => $qty) {
+                    $this->cartService->addProductsToCart([$productId], $qty);
+                }
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to add build to cart: ' . $e->getMessage());
+        }
+
+        return redirect()->route('cart.index')->with('success', 'AI-recommended build batch added to cart successfully!');
+    }
 }
