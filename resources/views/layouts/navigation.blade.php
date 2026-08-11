@@ -15,7 +15,10 @@
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Catalog</a>
-                    <a href="/builder" class="text-sm font-medium text-slate-300 hover:text-white transition">PC Builder</a>
+                    <a href="/build/summary" class="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-1">
+                        <span>📊</span>
+                        <span>Build Summary</span>
+                    </a>
                     <a href="/chat" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1.5">
                         <span>🤖</span>
                         <span>AI Assistant</span>
@@ -71,7 +74,7 @@
     <div id="mobile-menu" class="hidden md:hidden border-b border-slate-800 bg-slate-950/95 backdrop-blur-2xl px-4 pt-2 pb-6 space-y-4">
         <div class="space-y-1 pt-2">
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">Catalog</a>
-            <a href="/builder" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">PC Builder</a>
+            <a href="/build/summary" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">📊 Build Summary</a>
             <a href="/chat" class="block px-3 py-2 rounded-md text-base font-medium text-blue-400 hover:bg-blue-950/40 transition">🤖 AI Assistant</a>
             @auth
                 @if(Auth::user()->role === 'admin')

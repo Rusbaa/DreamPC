@@ -18,6 +18,7 @@ Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 
 // Build Cost Calculation Route
 Route::match(['get', 'post'], '/api/build/calculate-cost', [BuildController::class, 'calculateCost']);
+Route::match(['get', 'post'], '/build/summary', [BuildController::class, 'showSummary'])->name('build.summary');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
