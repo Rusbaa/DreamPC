@@ -44,6 +44,7 @@ Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confir
 // Order History Routes
 use App\Http\Controllers\OrderHistoryController;
 Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
+Route::post('/orders/{id}/reorder', [OrderHistoryController::class, 'reorder'])->name('orders.reorder');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {

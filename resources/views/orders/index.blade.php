@@ -52,15 +52,24 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-3">
                             <div class="text-right">
                                 <span class="text-[10px] text-slate-500 uppercase font-semibold block">Total Cost</span>
                                 <span class="text-sm font-bold text-emerald-400 font-mono">${{ number_format($order->total_amount, 2) }}</span>
                             </div>
                             
+                            <!-- Reorder Button -->
+                            <form method="POST" action="{{ route('orders.reorder', $order->id) }}" class="inline">
+                                @csrf
+                                <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition shadow-md shadow-blue-600/20 flex items-center space-x-1.5">
+                                    <span>🔄</span>
+                                    <span>Reorder Build</span>
+                                </button>
+                            </form>
+
                             <!-- Expand/Collapse Button -->
                             <button type="button" onclick="toggleOrderDetails({{ $order->id }})" 
-                                    class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">
+                                    class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                 <span id="toggle-text-{{ $order->id }}">View Components ▼</span>
                             </button>
                         </div>
