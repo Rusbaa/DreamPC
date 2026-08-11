@@ -211,9 +211,14 @@
                         @endif
                     </div>
 
-                    <a href="{{ route('build.summary') }}" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs py-3 rounded-xl transition shadow-lg shadow-blue-500/20 text-center block">
-                        Proceed to Build Analytics & Summary
-                    </a>
+                    <div class="space-y-2 pt-2">
+                        <a href="{{ route('checkout.index') }}" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/20 text-center block">
+                            Proceed to Checkout →
+                        </a>
+                        <a href="{{ route('build.summary') }}" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-semibold text-xs py-2.5 rounded-xl transition text-center block">
+                            📊 View Build Analytics & Summary
+                        </a>
+                    </div>
                 </div>
             </div>
 

@@ -35,6 +35,12 @@ Route::post('/cart/items/{item}/swap', [CartController::class, 'swap'])->name('c
 Route::post('/cart/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply');
 Route::post('/cart/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove');
 
+// Checkout Routes
+use App\Http\Controllers\CheckoutController;
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
 // Guest Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
