@@ -16,6 +16,10 @@
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="/" class="text-sm font-medium text-slate-300 hover:text-white transition">Catalog</a>
                     <a href="/builder" class="text-sm font-medium text-slate-300 hover:text-white transition">PC Builder</a>
+                    <a href="/chat" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition flex items-center gap-1.5">
+                        <span>🤖</span>
+                        <span>AI Assistant</span>
+                    </a>
                     @auth
                         @if(Auth::user()->role === 'admin')
                             <a href="{{ route('products.index') }}" class="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition">Inventory CRUD</a>
@@ -68,6 +72,7 @@
         <div class="space-y-1 pt-2">
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">Catalog</a>
             <a href="/builder" class="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-slate-800 hover:text-white transition">PC Builder</a>
+            <a href="/chat" class="block px-3 py-2 rounded-md text-base font-medium text-blue-400 hover:bg-blue-950/40 transition">🤖 AI Assistant</a>
             @auth
                 @if(Auth::user()->role === 'admin')
                     <a href="{{ route('products.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-400 hover:bg-indigo-950/50 transition">Inventory CRUD</a>

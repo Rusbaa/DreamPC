@@ -5,11 +5,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\BuildController;
+use App\Http\Controllers\ChatController;
 use App\Http\Middleware\CheckAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index']);
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+
+// Chat Interface Routes
+Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 
 // Build Cost Calculation Route
 Route::match(['get', 'post'], '/api/build/calculate-cost', [BuildController::class, 'calculateCost']);
