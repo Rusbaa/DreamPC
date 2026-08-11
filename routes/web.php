@@ -22,6 +22,7 @@ Route::match(['get', 'post'], '/build/summary', [BuildController::class, 'showSu
 
 // Cart Routes
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CouponController;
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/add-build', [CartController::class, 'add'])->name('cart.add-build');
@@ -29,6 +30,10 @@ Route::post('/cart/batch-add', [CartController::class, 'batchAdd'])->name('cart.
 Route::patch('/cart/items/{item}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/items/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::post('/cart/items/{item}/swap', [CartController::class, 'swap'])->name('cart.swap');
+
+// Coupon Routes
+Route::post('/cart/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply');
+Route::post('/cart/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {

@@ -44,5 +44,26 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        // Seed Sample Promotional Coupons
+        \App\Models\Coupon::updateOrCreate(
+            ['code' => 'SAVE10'],
+            [
+                'discount_type' => 'percent',
+                'value' => 10.00,
+                'min_spend' => 100.00,
+                'expires_at' => now()->addDays(60),
+            ]
+        );
+
+        \App\Models\Coupon::updateOrCreate(
+            ['code' => 'BUILD50'],
+            [
+                'discount_type' => 'fixed',
+                'value' => 50.00,
+                'min_spend' => 500.00,
+                'expires_at' => now()->addDays(60),
+            ]
+        );
     }
 }

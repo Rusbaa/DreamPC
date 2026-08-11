@@ -29,9 +29,24 @@ class CartController extends Controller
         $compatCheck = $this->compatibilityEngine->checkCompatibility($productIds);
 
         $subtotal = $cart->items->sum(fn($item) => $item->quantity * $item->unit_price);
-        $tax = round($subtotal * 0.05, 2);
+
+        // Coupon calculations
+        $appliedCoupon = session('applied_coupon');
+        $discount = 0.0;
+        if ($appliedCoupon) {
+            $couponCheck = app(\App\Services\CouponService::class)->validateAndCalculate($appliedCoupon['code'], $subtotal);
+            if ($couponCheck['valid']) {
+                $discount = $couponCheck['discount'];
+            } else {
+                session()->forget('applied_coupon');
+                $appliedCoupon = null;
+            }
+        }
+
+        $discountedSubtotal = max(0, $subtotal - $discount);
+        $tax = round($discountedSubtotal * 0.05, 2);
         $shipping = count($productIds) > 0 ? 15.00 + (count($productIds) - 1) * 2.00 : 0.00;
-        $total = $subtotal + $tax + $shipping;
+        $total = $discountedSubtotal + $tax + $shipping;
 
         // Fetch compatible alternatives for each item in cart
         $alternativesMap = [];
@@ -39,7 +54,7 @@ class CartController extends Controller
             $alternativesMap[$item->id] = $this->cartService->getCompatibleAlternatives($item->product_id);
         }
 
-        return view('cart.index', compact('cart', 'compatCheck', 'subtotal', 'tax', 'shipping', 'total', 'alternativesMap'));
+        return view('cart.index', compact('cart', 'compatCheck', 'subtotal', 'appliedCoupon', 'discount', 'discountedSubtotal', 'tax', 'shipping', 'total', 'alternativesMap'));
     }
 
     /**

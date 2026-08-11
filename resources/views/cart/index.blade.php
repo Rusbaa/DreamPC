@@ -23,6 +23,12 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs flex items-center justify-between">
+            <span>⚠️ {{ session('error') }}</span>
+        </div>
+    @endif
+
     @if($cart->items->isEmpty())
         <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center space-y-4">
             <span class="text-5xl opacity-40">🛒</span>
@@ -157,6 +163,19 @@
                             <span>Subtotal</span>
                             <span id="summary-subtotal" class="font-mono text-slate-200">${{ number_format($subtotal, 2) }}</span>
                         </div>
+
+                        @if($appliedCoupon)
+                            <div class="flex justify-between items-center text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
+                                <div class="flex items-center space-x-1.5">
+                                    <span>🎟️ {{ $appliedCoupon['code'] }}</span>
+                                    <span class="text-[10px] bg-emerald-500/20 px-1.5 py-0.5 rounded font-mono">
+                                        {{ $appliedCoupon['discount_type'] === 'percent' ? $appliedCoupon['value'] . '%' : '$' . $appliedCoupon['value'] }} OFF
+                                    </span>
+                                </div>
+                                <span class="font-mono">-${{ number_format($discount, 2) }}</span>
+                            </div>
+                        @endif
+
                         <div class="flex justify-between text-slate-400">
                             <span>Est. Tax (5%)</span>
                             <span id="summary-tax" class="font-mono text-slate-200">${{ number_format($tax, 2) }}</span>
@@ -169,6 +188,27 @@
                             <span class="text-white">Total</span>
                             <span id="summary-total" class="text-emerald-400 font-mono text-base">${{ number_format($total, 2) }}</span>
                         </div>
+                    </div>
+
+                    <!-- Coupon Code Input Box -->
+                    <div class="pt-3 border-t border-slate-800 space-y-2">
+                        @if($appliedCoupon)
+                            <form method="POST" action="{{ route('coupon.remove') }}">
+                                @csrf
+                                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-red-400 border border-slate-700 font-semibold text-xs py-2 rounded-xl transition">
+                                    Remove Coupon ({{ $appliedCoupon['code'] }})
+                                </button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('coupon.apply') }}" class="flex items-center space-x-2">
+                                @csrf
+                                <input type="text" name="code" placeholder="Coupon Code (e.g. SAVE10)" 
+                                       class="flex-grow bg-slate-950 border border-slate-800 text-xs text-white uppercase rounded-xl px-3 py-2 outline-none focus:border-blue-500 transition" required>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-2 rounded-xl transition shadow-md shadow-blue-600/20 flex-shrink-0">
+                                    Apply
+                                </button>
+                            </form>
+                        @endif
                     </div>
 
                     <a href="{{ route('build.summary') }}" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs py-3 rounded-xl transition shadow-lg shadow-blue-500/20 text-center block">
