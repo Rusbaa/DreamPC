@@ -20,6 +20,15 @@ Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 Route::match(['get', 'post'], '/api/build/calculate-cost', [BuildController::class, 'calculateCost']);
 Route::match(['get', 'post'], '/build/summary', [BuildController::class, 'showSummary'])->name('build.summary');
 
+// Cart Routes
+use App\Http\Controllers\CartController;
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/add-build', [CartController::class, 'add'])->name('cart.add-build');
+Route::patch('/cart/items/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/items/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::post('/cart/items/{item}/swap', [CartController::class, 'swap'])->name('cart.swap');
+
 // Guest Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');

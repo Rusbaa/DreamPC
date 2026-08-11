@@ -162,9 +162,13 @@
                                     <div class="text-lg font-black text-emerald-400">${{ number_format($product->price, 2) }}</div>
                                 </div>
 
-                                <button type="button" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition shadow-md shadow-blue-600/20">
-                                    Add to Cart
-                                </button>
+                                <form method="POST" action="{{ route('cart.add') }}">
+                                    @csrf
+                                    <input type="hidden" name="product_ids[]" value="{{ $product->id }}">
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition shadow-md shadow-blue-600/20">
+                                        Add to Cart
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     @endforeach

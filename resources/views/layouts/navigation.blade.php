@@ -23,6 +23,10 @@
                         <span>🤖</span>
                         <span>AI Assistant</span>
                     </a>
+                    <a href="/cart" class="text-sm font-medium text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1.5">
+                        <span>🛒</span>
+                        <span>Cart</span>
+                    </a>
                     @auth
                         @if(Auth::user()->role === 'admin')
                             <a href="{{ route('products.index') }}" class="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition">Inventory CRUD</a>
