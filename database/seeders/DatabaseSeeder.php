@@ -24,6 +24,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Seed initial Customer User
+        User::updateOrCreate(
+            ['email' => 'customer@dreampc.com'],
+            [
+                'name' => 'John Customer',
+                'password' => Hash::make('password'),
+                'role' => 'customer',
+            ]
+        );
+
         // Seed Default Hardware Categories
         $categories = [
             'CPU' => 'cpu',
