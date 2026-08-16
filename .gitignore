@@ -1,0 +1,5 @@
+#added .env file to the gitignore file to prevent it from being tracked by git. This is important for security reasons, as .env files often contain sensitive information such as API keys and database credentials.
+.env
+.env.backup
+.env.production
+
