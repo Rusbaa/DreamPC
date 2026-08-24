@@ -2,8 +2,6 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="max-w-6xl mx-auto space-y-8 pb-12">
-    
-    <!-- Page Header -->
     <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-xl flex items-center justify-between">
         <div class="flex items-center space-x-3">
             <span class="text-3xl">🛒</span>
@@ -18,14 +16,16 @@
     </div>
 
     <?php if(session('success')): ?>
-        <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl text-xs flex items-center justify-between">
-            <span>✓ <?php echo e(session('success')); ?></span>
+        <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl text-xs">
+            ✓ <?php echo e(session('success')); ?>
+
         </div>
     <?php endif; ?>
 
     <?php if(session('error')): ?>
-        <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs flex items-center justify-between">
-            <span>⚠️ <?php echo e(session('error')); ?></span>
+        <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs">
+            ⚠️ <?php echo e(session('error')); ?>
+
         </div>
     <?php endif; ?>
 
@@ -45,11 +45,7 @@
         </div>
     <?php else: ?>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <!-- Cart Items List (Col 2) -->
             <div class="lg:col-span-2 space-y-4">
-                
-                <!-- System Compatibility Banner -->
                 <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <span class="text-lg">⚙️</span>
@@ -77,7 +73,6 @@
                     </div>
                 <?php endif; ?>
 
-                <!-- Items Table / Cards -->
                 <div class="space-y-3">
                     <?php $__currentLoopData = $cart->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="bg-slate-900/80 border border-slate-800/80 hover:border-slate-700 p-4 rounded-2xl transition space-y-3">
@@ -102,23 +97,15 @@
                                     <div class="text-xs text-emerald-400 font-bold mt-1 font-mono">$<?php echo e(number_format($item->unit_price, 2)); ?></div>
                                 </div>
 
-                                <!-- AJAX Quantity Controls -->
                                 <div class="flex items-center space-x-2 bg-slate-950 border border-slate-800 rounded-xl p-1">
-                                    <button type="button" onclick="updateCartQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity - 1); ?>)" 
-                                            class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 flex items-center justify-center text-xs font-bold transition">
-                                        -
-                                    </button>
-                                    <span id="quantity-<?php echo e($item->id); ?>" class="w-8 text-center text-xs font-bold text-white font-mono">
-                                        <?php echo e($item->quantity); ?>
-
-                                    </span>
-                                    <button type="button" onclick="updateCartQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity + 1); ?>)" 
-                                            class="w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 flex items-center justify-center text-xs font-bold transition">
-                                        +
-                                    </button>
+                                    <?php
+                                        $qtyBtnClass = 'w-7 h-7 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 flex items-center justify-center text-xs font-bold transition';
+                                    ?>
+                                    <button type="button" onclick="updateCartQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity - 1); ?>)" class="<?php echo e($qtyBtnClass); ?>">-</button>
+                                    <span id="quantity-<?php echo e($item->id); ?>" class="w-8 text-center text-xs font-bold text-white font-mono"><?php echo e($item->quantity); ?></span>
+                                    <button type="button" onclick="updateCartQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity + 1); ?>)" class="<?php echo e($qtyBtnClass); ?>">+</button>
                                 </div>
 
-                                <!-- Item Subtotal & Actions -->
                                 <div class="text-right flex flex-col items-end space-y-2">
                                     <span id="subtotal-<?php echo e($item->id); ?>" class="text-sm font-extrabold text-white font-mono">
                                         $<?php echo e(number_format($item->quantity * $item->unit_price, 2)); ?>
@@ -127,14 +114,11 @@
                                     <form method="POST" action="<?php echo e(route('cart.destroy', $item->id)); ?>">
                                         <?php echo csrf_field(); ?>
                                         <?php echo method_field('DELETE'); ?>
-                                        <button type="submit" class="text-xs text-slate-500 hover:text-red-400 transition">
-                                            Remove
-                                        </button>
+                                        <button type="submit" class="text-xs text-slate-500 hover:text-red-400 transition">Remove</button>
                                     </form>
                                 </div>
                             </div>
 
-                            <!-- Component Alternative Swapper Section -->
                             <?php if(!empty($alternativesMap[$item->id])): ?>
                                 <div class="pt-2 border-t border-slate-800/60 flex items-center justify-between text-xs">
                                     <span class="text-slate-400 text-[11px]">🔄 Swap with compatible alternative:</span>
@@ -156,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- Order Summary Sidebar (Col 1) -->
             <div class="space-y-6">
                 <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
                     <h2 class="text-base font-bold text-white border-b border-slate-800 pb-3">Order Financial Breakdown</h2>
@@ -168,14 +151,18 @@
                         </div>
 
                         <?php if($appliedCoupon): ?>
-                            <div class="flex justify-between items-center text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
+                            <div id="coupon-section" class="flex justify-between items-center text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
                                 <div class="flex items-center space-x-1.5">
                                     <span>🎟️ <?php echo e($appliedCoupon['code']); ?></span>
                                     <span class="text-[10px] bg-emerald-500/20 px-1.5 py-0.5 rounded font-mono">
                                         <?php echo e($appliedCoupon['discount_type'] === 'percent' ? $appliedCoupon['value'] . '%' : '$' . $appliedCoupon['value']); ?> OFF
                                     </span>
                                 </div>
-                                <span class="font-mono">-$<?php echo e(number_format($discount, 2)); ?></span>
+                                <span id="summary-discount" class="font-mono">-$<?php echo e(number_format($discount, 2)); ?></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400">
+                                <span>After Discount</span>
+                                <span id="summary-discounted-subtotal" class="font-mono text-slate-200">$<?php echo e(number_format($discountedSubtotal, 2)); ?></span>
                             </div>
                         <?php endif; ?>
 
@@ -193,7 +180,6 @@
                         </div>
                     </div>
 
-                    <!-- Coupon Code Input Box -->
                     <div class="pt-3 border-t border-slate-800 space-y-2">
                         <?php if($appliedCoupon): ?>
                             <form method="POST" action="<?php echo e(route('coupon.remove')); ?>">
@@ -224,7 +210,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     <?php endif; ?>
 </div>
@@ -234,31 +219,39 @@ async function updateCartQuantity(itemId, quantity) {
     if (quantity < 0) return;
 
     try {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         const response = await fetch(`/cart/items/${itemId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ quantity: quantity })
+            body: JSON.stringify({ quantity })
         });
 
         const data = await response.json();
+        if (data.status !== 'success') return;
 
-        if (data.status === 'success') {
-            if (quantity === 0) {
-                window.location.reload();
-                return;
-            }
+        if (quantity === 0) {
+            window.location.reload();
+            return;
+        }
 
-            document.getElementById(`quantity-${itemId}`).textContent = data.item_quantity;
-            document.getElementById(`subtotal-${itemId}`).textContent = data.item_subtotal;
-            document.getElementById('summary-subtotal').textContent = data.cart_subtotal;
-            document.getElementById('summary-tax').textContent = data.cart_tax;
-            document.getElementById('summary-shipping').textContent = data.cart_shipping;
-            document.getElementById('summary-total').textContent = data.cart_total;
+        const setText = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        };
+
+        setText(`quantity-${itemId}`, data.item_quantity);
+        setText(`subtotal-${itemId}`, data.item_subtotal);
+        setText('summary-subtotal', data.cart_subtotal);
+        setText('summary-tax', data.cart_tax);
+        setText('summary-shipping', data.cart_shipping);
+        setText('summary-total', data.cart_total);
+
+        if (data.discount !== undefined) {
+            setText('summary-discount', data.discount);
+            setText('summary-discounted-subtotal', data.discounted_subtotal);
         }
     } catch (e) {
         console.error('Error updating cart quantity:', e);
@@ -266,5 +259,4 @@ async function updateCartQuantity(itemId, quantity) {
 }
 </script>
 <?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\Work\App Dev\PC Builder Website\resources\views/cart/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Arfa\Desktop\ProjectDreamPC\DreamPC\resources\views/cart/index.blade.php ENDPATH**/ ?>
