@@ -23,11 +23,15 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        // role is intentionally not mass-assignable (see User::$fillable) so
+        // it can never be set from request input; every new registration
+        // gets the 'customer' default defined on the users migration's role
+        // enum column. Admin accounts are created separately (e.g. via
+        // seeder or tinker), never through this public form.
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'customer',
         ]);
 
         Auth::login($user);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\User;
 use App\Services\CartService;
 use App\Services\CouponService;
 use App\Services\SpecExtractorService;
@@ -101,8 +100,10 @@ class CheckoutController extends Controller
             : 0.00;
         $total = $discountedSubtotal + $tax + $shipping;
 
-        // Resolve User ID for database foreign key constraint
-        $userId = auth()->id() ?? User::first()->id ?? 1;
+        // This route is behind the 'auth' middleware, so auth()->id() is
+        // always present here — no fallback needed (a fallback to "first
+        // user in the DB" would silently misattribute orders).
+        $userId = auth()->id();
 
         try {
             $order = DB::transaction(function () use ($cart, $userId, $total, $discount, $request) {
@@ -120,6 +121,11 @@ class CheckoutController extends Controller
                 // 2. Create Order Record
                 $order = Order::create([
                     'user_id' => $userId,
+                    'customer_name' => $request->customer_name,
+                    'customer_phone' => $request->customer_phone,
+                    'address' => $request->fulfillment_type === 'delivery'
+                        ? $request->address
+                        : null,
                     'total_amount' => $total,
                     'discount_amount' => $discount,
                     'fulfillment_type' => $request->fulfillment_type,
@@ -157,10 +163,19 @@ class CheckoutController extends Controller
 
     /**
      * Display order confirmation page (Step 3).
+     *
+     * Scoped to the authenticated user: without the where('user_id', ...)
+     * clause any logged-in user could view any other user's order by
+     * incrementing the ID in the URL (an IDOR vulnerability). Using
+     * findOrFail() on the scoped query returns 404 for orders that exist
+     * but aren't the caller's, rather than a 403 that would confirm the
+     * order ID is valid.
      */
     public function confirmation(int $orderId)
     {
-        $order = Order::with(['items.product', 'user'])->findOrFail($orderId);
+        $order = Order::with(['items.product', 'user'])
+            ->where('user_id', auth()->id())
+            ->findOrFail($orderId);
 
         return view('checkout.confirmation', compact('order'));
     }

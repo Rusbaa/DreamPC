@@ -55,6 +55,9 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // Seed Product Inventory (must run after categories exist)
+        $this->call(ProductSeeder::class);
+
         // Seed Sample Promotional Coupons
         \App\Models\Coupon::updateOrCreate(
             ['code' => 'SAVE10'],
