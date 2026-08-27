@@ -12,8 +12,9 @@ class OrderHistoryController extends Controller
      */
     public function index()
     {
-        // Resolve user ID, fallback to ID 1 for testing if not signed in
-        $userId = auth()->id() ?? 1;
+        // This route is behind the 'auth' middleware, so auth()->id() is
+        // always present here.
+        $userId = auth()->id();
 
         $orders = Order::with(['items.product.category'])
             ->where('user_id', $userId)
@@ -29,7 +30,7 @@ class OrderHistoryController extends Controller
      */
     public function reorder(int $id, \App\Services\CartService $cartService)
     {
-        $userId = auth()->id() ?? 1;
+        $userId = auth()->id();
         $order = Order::with('items.product')->where('user_id', $userId)->findOrFail($id);
 
         $notifications = [];
